@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogTitle,
@@ -21,6 +22,8 @@ import { FiltersType } from 'tg.component/translation/translationFilters/tools';
 import { User } from 'tg.component/UserAccount';
 import { TaskCreateForm } from 'tg.ee/task/components/taskCreate/TaskCreateForm';
 import { TranslationStateType } from 'tg.ee/task/components/taskCreate/TranslationStateFilter';
+import { translationProviders } from './translationProviders';
+import { TranslationAgency } from './TranslationAgency';
 
 type TaskType = components['schemas']['TaskModel']['type'];
 type LanguageModel = components['schemas']['LanguageModel'];
@@ -39,7 +42,7 @@ const StyledContainer = styled('div')`
   padding: ${({ theme }) => theme.spacing(3)};
   gap: ${({ theme }) => theme.spacing(0.5, 3)};
   padding-top: ${({ theme }) => theme.spacing(1)};
-  width: min(calc(100vw - 64px), 800px);
+  width: min(calc(100vw - 64px), 1000px);
 `;
 
 const StyledActions = styled('div')`
@@ -105,7 +108,7 @@ export const OrderTranslationsDialog = ({
     initialValues?.selection ?? selectedLoadable.data?.ids ?? [];
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="lg">
+    <Dialog open={open} onClose={onClose} maxWidth="xl">
       <StyledMainTitle>
         <T keyName="order_translations_title" />
       </StyledMainTitle>
@@ -169,7 +172,11 @@ export const OrderTranslationsDialog = ({
                     <T keyName="order_translation_choose_translation_agency_title" />
                   </StepLabel>
                   <StepContent>
-                    <div />
+                    <Box display="grid" gap="20px">
+                      {translationProviders.map((provider, i) => (
+                        <TranslationAgency key={i} provider={provider} />
+                      ))}
+                    </Box>
                   </StepContent>
                 </Step>
 
