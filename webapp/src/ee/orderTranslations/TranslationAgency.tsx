@@ -30,7 +30,7 @@ export const TranslationAgency = ({ provider }: Props) => {
   const url = provider.url ? new URL(provider.url) : undefined;
   return (
     <StyledContainer>
-      <Box display="flex" justifyContent="space-between">
+      <Box display="flex" justifyContent="space-between" flexWrap="wrap">
         <img src={provider.logo} />
         {url && (
           <a target="_blank" href={url.toString()} rel="noreferrer">
