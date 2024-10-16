@@ -327,6 +327,7 @@ declare namespace DataCy {
         "namespaces-select-text-field" |
         "namespaces-selector" |
         "navigation-item" |
+        "order-translation-submit" |
         "organization-address-part-field" |
         "organization-description-field" |
         "organization-invitation-cancel-button" |
@@ -520,6 +521,7 @@ declare namespace DataCy {
         "tasks-filter-menu" |
         "tasks-header-add-task" |
         "tasks-header-filter-select" |
+        "tasks-header-order-translation" |
         "tasks-header-show-closed" |
         "tasks-view-board-button" |
         "tasks-view-list-button" |

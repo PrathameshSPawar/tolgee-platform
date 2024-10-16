@@ -1,4 +1,13 @@
-import { Button, Dialog, DialogTitle, styled } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  Step,
+  StepContent,
+  StepLabel,
+  Stepper,
+  styled,
+} from '@mui/material';
 import { T, useTranslate } from '@tolgee/react';
 import { Formik } from 'formik';
 import { useState } from 'react';
@@ -10,11 +19,8 @@ import { messageService } from 'tg.service/MessageService';
 import LoadingButton from 'tg.component/common/form/LoadingButton';
 import { FiltersType } from 'tg.component/translation/translationFilters/tools';
 import { User } from 'tg.component/UserAccount';
-
-import { TranslationStateType } from './TranslationStateFilter';
-import { useEnabledFeatures } from 'tg.globalContext/helpers';
-import { PaidFeatureBanner } from 'tg.ee/common/PaidFeatureBanner';
-import { TaskCreateForm } from './TaskCreateForm';
+import { TaskCreateForm } from 'tg.ee/task/components/taskCreate/TaskCreateForm';
+import { TranslationStateType } from 'tg.ee/task/components/taskCreate/TranslationStateFilter';
 
 type TaskType = components['schemas']['TaskModel']['type'];
 type LanguageModel = components['schemas']['LanguageModel'];
@@ -62,7 +68,7 @@ type Props = {
   initialValues?: Partial<InitialValues>;
 };
 
-export const TaskCreateDialog = ({
+export const OrderTranslationsDialog = ({
   open,
   onClose,
   onFinished,
@@ -81,9 +87,6 @@ export const TaskCreateDialog = ({
   const [filters, setFilters] = useState<FiltersType>({});
   const [stateFilters, setStateFilters] = useState<TranslationStateType[]>([]);
   const [languages, setLanguages] = useState(initialValues?.languages ?? []);
-  const { features } = useEnabledFeatures();
-
-  const taskFeature = features.includes('TASKS');
 
   const selectedLoadable = useApiQuery({
     url: '/v2/projects/{projectId}/translations/select-all',
@@ -101,19 +104,14 @@ export const TaskCreateDialog = ({
   const selectedKeys =
     initialValues?.selection ?? selectedLoadable.data?.ids ?? [];
 
-  const disabled = !taskFeature;
-
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg">
-      {!taskFeature && (
-        <PaidFeatureBanner customMessage={t('tasks_feature_description')} />
-      )}
       <StyledMainTitle>
-        <T keyName="batch_operation_create_task_title" />
+        <T keyName="order_translations_title" />
       </StyledMainTitle>
       <StyledSubtitle>
         <T
-          keyName="batch_operation_create_task_keys_subtitle"
+          keyName="order_translations_keys_subtitle"
           params={{ value: selectedKeys.length }}
         />
       </StyledSubtitle>
@@ -152,7 +150,7 @@ export const TaskCreateDialog = ({
               onSuccess() {
                 messageService.success(
                   <T
-                    keyName="create_task_success_message"
+                    keyName="order_translation_success_message"
                     params={{ count: languages.length }}
                   />
                 );
@@ -165,29 +163,49 @@ export const TaskCreateDialog = ({
         {({ submitForm }) => {
           return (
             <StyledContainer>
-              <TaskCreateForm
-                selectedKeys={selectedKeys}
-                languages={languages}
-                setLanguages={setLanguages}
-                allLanguages={allLanguages}
-                filters={filters}
-                setFilters={initialValues?.selection ? setFilters : undefined}
-                stateFilters={stateFilters}
-                setStateFilters={setStateFilters}
-                projectId={projectId}
-                disabled={disabled}
-              />
+              <Stepper orientation="vertical">
+                <Step key={1}>
+                  <StepLabel>
+                    <T keyName="order_translation_choose_translation_agency_title" />
+                  </StepLabel>
+                  <StepContent>
+                    <div />
+                  </StepContent>
+                </Step>
+
+                <Step key={2}>
+                  <StepLabel>
+                    <T keyName="order_translation_create_task_title" />
+                  </StepLabel>
+                  <StepContent>
+                    <TaskCreateForm
+                      selectedKeys={selectedKeys}
+                      languages={languages}
+                      setLanguages={setLanguages}
+                      allLanguages={allLanguages}
+                      filters={filters}
+                      setFilters={
+                        initialValues?.selection ? setFilters : undefined
+                      }
+                      stateFilters={stateFilters}
+                      setStateFilters={setStateFilters}
+                      projectId={projectId}
+                      hideDueDate
+                    />
+                  </StepContent>
+                </Step>
+              </Stepper>
               <StyledActions>
                 <Button onClick={onClose}>{t('global_cancel_button')}</Button>
                 <LoadingButton
-                  disabled={!languages.length || !taskFeature}
+                  disabled={!languages.length}
                   onClick={submitForm}
                   color="primary"
                   variant="contained"
                   loading={createTasksLoadable.isLoading}
-                  data-cy="create-task-submit"
+                  data-cy="order-translation-submit"
                 >
-                  {t('create_task_submit_button')}
+                  {t('order_translation_submit_button')}
                 </LoadingButton>
               </StyledActions>
             </StyledContainer>
