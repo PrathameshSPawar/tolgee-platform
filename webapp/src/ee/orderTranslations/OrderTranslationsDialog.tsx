@@ -1,8 +1,11 @@
 import {
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogTitle,
+  FormControlLabel,
+  FormGroup,
   Step,
   StepContent,
   StepLabel,
@@ -56,6 +59,12 @@ const StyledStepLabel = styled(StepLabel)`
   &.clickable {
     cursor: pointer;
   }
+`;
+
+const StyledStepContent = styled(Box)`
+  display: grid;
+  padding-top: ${({ theme }) => theme.spacing(1)};
+  gap: ${({ theme }) => theme.spacing(0.5, 3)};
 `;
 
 export type InitialValues = {
@@ -134,6 +143,8 @@ export const OrderTranslationsDialog = ({
           dueDate: initialValues?.dueDate ?? undefined,
           assignees: initialValues?.languageAssignees ?? {},
           provider: undefined as number | undefined,
+          agreeSharing: true,
+          agreeInvite: true,
         }}
         validationSchema={Validation.CREATE_TASK_FORM(t)}
         onSubmit={async (values) => {
@@ -198,28 +209,49 @@ export const OrderTranslationsDialog = ({
                 </Step>
 
                 <Step key={2}>
-                  <StyledStepLabel
+                  <StepLabel
                     className="clickable"
                     onClick={() => setStep(0)}
                     role="button"
                   >
                     <T keyName="order_translation_create_task_title" />
-                  </StyledStepLabel>
+                  </StepLabel>
                   <StepContent>
-                    <TaskCreateForm
-                      selectedKeys={selectedKeys}
-                      languages={languages}
-                      setLanguages={setLanguages}
-                      allLanguages={allLanguages}
-                      filters={filters}
-                      setFilters={
-                        initialValues?.selection ? setFilters : undefined
-                      }
-                      stateFilters={stateFilters}
-                      setStateFilters={setStateFilters}
-                      projectId={projectId}
-                      hideDueDate
-                    />
+                    <StyledStepContent>
+                      <TaskCreateForm
+                        selectedKeys={selectedKeys}
+                        languages={languages}
+                        setLanguages={setLanguages}
+                        allLanguages={allLanguages}
+                        filters={filters}
+                        setFilters={
+                          initialValues?.selection ? setFilters : undefined
+                        }
+                        stateFilters={stateFilters}
+                        setStateFilters={setStateFilters}
+                        projectId={projectId}
+                        hideDueDate
+                      />
+
+                      <FormGroup sx={{ mt: 2, ml: 2 }}>
+                        <FormControlLabel
+                          label={t('order_translation_sharing_details_label')}
+                          checked={values.agreeSharing}
+                          onChange={() =>
+                            setFieldValue('agreeSharing', !values.agreeSharing)
+                          }
+                          control={<Checkbox />}
+                        />
+                        <FormControlLabel
+                          label={t('order_translation_invite_to_project_label')}
+                          checked={values.agreeInvite}
+                          onChange={() =>
+                            setFieldValue('agreeInvite', !values.agreeInvite)
+                          }
+                          control={<Checkbox />}
+                        />
+                      </FormGroup>
+                    </StyledStepContent>
                   </StepContent>
                 </Step>
               </Stepper>

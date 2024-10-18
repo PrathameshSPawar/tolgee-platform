@@ -2,6 +2,13 @@ import { Box, styled } from '@mui/material';
 import { TranslationProviderType } from './translationProviders';
 import { ProviderDescription } from './ProviderDescription';
 import clsx from 'clsx';
+import { LinkExternal01 } from '@untitled-ui/icons-react';
+
+const StyledLinkExternal01 = styled(LinkExternal01)`
+  margin-left: 3px;
+  position: relative;
+  top: 2px;
+`;
 
 const StyledContainer = styled(Box)`
   border: 1px solid ${({ theme }) => theme.palette.tokens.border.soft};
@@ -59,6 +66,7 @@ export const TranslationProvider = ({
           {url && (
             <a target="_blank" href={url.toString()} rel="noreferrer">
               {url.host}
+              <StyledLinkExternal01 width={14} height={14} />
             </a>
           )}
         </Box>
