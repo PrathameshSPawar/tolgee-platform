@@ -1,7 +1,6 @@
-import { Box, Button, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { TranslationProviderType } from './translationProviders';
 import { ProviderDescription } from './ProviderDescription';
-import { useTranslate } from '@tolgee/react';
 import clsx from 'clsx';
 
 const StyledContainer = styled(Box)`
@@ -12,9 +11,12 @@ const StyledContainer = styled(Box)`
   background: ${({ theme }) => theme.palette.tokens.background['paper-2']};
   padding: 20px;
   cursor: pointer;
+  transition: box-shadow ease-in-out 0.2s, border-color ease-in-out 0.2s;
   &.selected {
     border-color: ${({ theme }) => theme.palette.primary.main};
     cursor: unset;
+    box-shadow: 0px 0px 17px 0px
+      ${({ theme }) => theme.palette.primary.main + '55'};
   }
 `;
 
@@ -40,7 +42,6 @@ export const TranslationProvider = ({
   selected,
   onSelect,
 }: Props) => {
-  const { t } = useTranslate();
   const url = provider.url ? new URL(provider.url) : undefined;
   return (
     <StyledContainer
@@ -60,14 +61,6 @@ export const TranslationProvider = ({
               {url.host}
             </a>
           )}
-          <Button
-            size="small"
-            color="primary"
-            variant="outlined"
-            onClick={() => onSelect(provider.id)}
-          >
-            {t('translation_provider_select')}
-          </Button>
         </Box>
       </Box>
       {provider.services && (

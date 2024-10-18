@@ -52,6 +52,12 @@ const StyledActions = styled('div')`
   justify-content: end;
 `;
 
+const StyledStepLabel = styled(StepLabel)`
+  &.clickable {
+    cursor: pointer;
+  }
+`;
+
 export type InitialValues = {
   type: TaskType;
   name: string;
@@ -90,7 +96,7 @@ export const OrderTranslationsDialog = ({
   const [filters, setFilters] = useState<FiltersType>({});
   const [stateFilters, setStateFilters] = useState<TranslationStateType[]>([]);
   const [languages, setLanguages] = useState(initialValues?.languages ?? []);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
 
   const selectedLoadable = useApiQuery({
     url: '/v2/projects/{projectId}/translations/select-all',
@@ -170,9 +176,13 @@ export const OrderTranslationsDialog = ({
             <StyledContainer>
               <Stepper orientation="vertical" activeStep={step}>
                 <Step key={1}>
-                  <StepLabel>
+                  <StyledStepLabel
+                    className="clickable"
+                    onClick={() => setStep(0)}
+                    role="button"
+                  >
                     <T keyName="order_translation_choose_translation_agency_title" />
-                  </StepLabel>
+                  </StyledStepLabel>
                   <StepContent>
                     <Box display="grid" gap="20px">
                       {translationProviders.map((provider, i) => (
@@ -188,9 +198,13 @@ export const OrderTranslationsDialog = ({
                 </Step>
 
                 <Step key={2}>
-                  <StepLabel>
+                  <StyledStepLabel
+                    className="clickable"
+                    onClick={() => setStep(0)}
+                    role="button"
+                  >
                     <T keyName="order_translation_create_task_title" />
-                  </StepLabel>
+                  </StyledStepLabel>
                   <StepContent>
                     <TaskCreateForm
                       selectedKeys={selectedKeys}
@@ -211,11 +225,12 @@ export const OrderTranslationsDialog = ({
               </Stepper>
               <StyledActions>
                 <Button onClick={onClose}>{t('global_cancel_button')}</Button>
-                {step !== 2 ? (
+                {step !== 1 ? (
                   <Button
-                    onClick={() => setStep(2)}
+                    onClick={() => setStep(1)}
                     color="primary"
                     variant="contained"
+                    disabled={values.provider === undefined}
                     data-cy="order-translation-next"
                   >
                     {t('order_translation_next_button')}
