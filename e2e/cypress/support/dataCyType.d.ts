@@ -327,6 +327,7 @@ declare namespace DataCy {
         "namespaces-select-text-field" |
         "namespaces-selector" |
         "navigation-item" |
+        "order-translation-next" |
         "order-translation-submit" |
         "organization-address-part-field" |
         "organization-description-field" |

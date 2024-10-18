@@ -1,4 +1,5 @@
-export type TranslationProvider = {
+export type TranslationProviderType = {
+  id: number;
   logo: string;
   url?: string;
   services?: string[];
@@ -7,6 +8,7 @@ export type TranslationProvider = {
 
 export const translationProviders = [
   {
+    id: 1,
     logo: '/images/translationAgencies/alconost.svg',
     url: 'https://alconost.com',
     services: [
@@ -29,6 +31,7 @@ Seamless localization of software, apps, games, websites, and other materials in
     `,
   },
   {
+    id: 2,
     logo: '/images/translationAgencies/rapidTranslate.svg',
     url: 'https://www.rapidtranslate.org',
     description: `
@@ -39,4 +42,4 @@ Seamless localization of software, apps, games, websites, and other materials in
  - Notarized Translations Available
 `,
   },
-] satisfies TranslationProvider[];
+] satisfies TranslationProviderType[];

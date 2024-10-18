@@ -23,7 +23,7 @@ import { User } from 'tg.component/UserAccount';
 import { TaskCreateForm } from 'tg.ee/task/components/taskCreate/TaskCreateForm';
 import { TranslationStateType } from 'tg.ee/task/components/taskCreate/TranslationStateFilter';
 import { translationProviders } from './translationProviders';
-import { TranslationAgency } from './TranslationAgency';
+import { TranslationProvider } from './TranslationProvider';
 
 type TaskType = components['schemas']['TaskModel']['type'];
 type LanguageModel = components['schemas']['LanguageModel'];
@@ -90,6 +90,7 @@ export const OrderTranslationsDialog = ({
   const [filters, setFilters] = useState<FiltersType>({});
   const [stateFilters, setStateFilters] = useState<TranslationStateType[]>([]);
   const [languages, setLanguages] = useState(initialValues?.languages ?? []);
+  const [step, setStep] = useState(1);
 
   const selectedLoadable = useApiQuery({
     url: '/v2/projects/{projectId}/translations/select-all',
@@ -126,6 +127,7 @@ export const OrderTranslationsDialog = ({
           description: initialValues?.description ?? '',
           dueDate: initialValues?.dueDate ?? undefined,
           assignees: initialValues?.languageAssignees ?? {},
+          provider: undefined as number | undefined,
         }}
         validationSchema={Validation.CREATE_TASK_FORM(t)}
         onSubmit={async (values) => {
@@ -163,10 +165,10 @@ export const OrderTranslationsDialog = ({
           );
         }}
       >
-        {({ submitForm }) => {
+        {({ submitForm, values, setFieldValue }) => {
           return (
             <StyledContainer>
-              <Stepper orientation="vertical">
+              <Stepper orientation="vertical" activeStep={step}>
                 <Step key={1}>
                   <StepLabel>
                     <T keyName="order_translation_choose_translation_agency_title" />
@@ -174,7 +176,12 @@ export const OrderTranslationsDialog = ({
                   <StepContent>
                     <Box display="grid" gap="20px">
                       {translationProviders.map((provider, i) => (
-                        <TranslationAgency key={i} provider={provider} />
+                        <TranslationProvider
+                          key={i}
+                          provider={provider}
+                          selected={values.provider === provider.id}
+                          onSelect={(id) => setFieldValue('provider', id)}
+                        />
                       ))}
                     </Box>
                   </StepContent>
@@ -204,16 +211,27 @@ export const OrderTranslationsDialog = ({
               </Stepper>
               <StyledActions>
                 <Button onClick={onClose}>{t('global_cancel_button')}</Button>
-                <LoadingButton
-                  disabled={!languages.length}
-                  onClick={submitForm}
-                  color="primary"
-                  variant="contained"
-                  loading={createTasksLoadable.isLoading}
-                  data-cy="order-translation-submit"
-                >
-                  {t('order_translation_submit_button')}
-                </LoadingButton>
+                {step !== 2 ? (
+                  <Button
+                    onClick={() => setStep(2)}
+                    color="primary"
+                    variant="contained"
+                    data-cy="order-translation-next"
+                  >
+                    {t('order_translation_next_button')}
+                  </Button>
+                ) : (
+                  <LoadingButton
+                    disabled={!languages.length}
+                    onClick={submitForm}
+                    color="primary"
+                    variant="contained"
+                    loading={createTasksLoadable.isLoading}
+                    data-cy="order-translation-submit"
+                  >
+                    {t('order_translation_submit_button')}
+                  </LoadingButton>
+                )}
               </StyledActions>
             </StyledContainer>
           );
